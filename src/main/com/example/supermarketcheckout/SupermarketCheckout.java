@@ -16,11 +16,11 @@ public class SupermarketCheckout {
     }
 
 
-    public void addItemStockList(Item item) {
+    public void addItemToStockList(Item item) {
         stockList.add(item);
     }
 
-    public void modiftyItemPrice(String productIdentifier, int newPrice) {
+    public void modifyItemPrice(String productIdentifier, int newPrice) {
         returnItemByIdentifier(productIdentifier).updatePrice(newPrice);
     }
 
@@ -33,7 +33,7 @@ public class SupermarketCheckout {
         return null;
     }
 
-    public void modiftyItemSpecialPrice(String productIdentifier, int quantityOfDeal, int specialPrice) {
+    public void modifyItemSpecialPrice(String productIdentifier, int quantityOfDeal, int specialPrice) {
         String newSpecialPrice = (Integer.toString(quantityOfDeal)) + " for " + (Integer.toString(specialPrice));
         returnItemByIdentifier(productIdentifier).updateSpecialPrice(newSpecialPrice);
     }
@@ -54,38 +54,34 @@ public class SupermarketCheckout {
 
     public int getTotal() {
         int totalCost = 0;
-        Set<String> unique = new HashSet<String>(basketList);
+        Set<String> unique = new HashSet<>(basketList); //pass unique items in basketList to HashSet
 
         for (String key : unique) {
-            totalCost = calculateTotalValueOfBasket(totalCost, key);
+            totalCost += calculateTotalValueOfBasket(key);
         }
 
-        return  totalCost;
+        return totalCost;
     }
 
-    private int calculateTotalValueOfBasket(int totalCost, String key) {
+    private int calculateTotalValueOfBasket(String key) {
+        int basketTotal = 0;
         int numberOfItemsInBasket = Collections.frequency(basketList, key);
         Item item = returnItemByIdentifier(key);
 
         if (itemHasASpecialPrice(item)) {
-            totalCost = calculateCostOfItemsEligibleForSpecialPrice(totalCost, numberOfItemsInBasket, item);
+            basketTotal += calculateCostOfItemsEligibleForSpecialPrice(numberOfItemsInBasket, item);
         } else {
-            totalCost = calculateRegularItems(totalCost, numberOfItemsInBasket, item);
+            basketTotal += calculateRegularItems(numberOfItemsInBasket, item);
         }
 
-        return totalCost;
-    }
-
-    private int calculateRegularItems(int totalCost, int numberOfItemsInBasket, Item item) {
-        totalCost += item.getItemPrice() * numberOfItemsInBasket;
-        return totalCost;
+        return basketTotal;
     }
 
     private boolean itemHasASpecialPrice(Item item) {
         return item.getSpecialPrice() != null;
     }
 
-    private int calculateCostOfItemsEligibleForSpecialPrice(int totalCost, int numberOfItemsInBasket, Item item) {
+    private int calculateCostOfItemsEligibleForSpecialPrice(int numberOfItemsInBasket, Item item) {
         int numberOfNonSpecialPrices = numberOfItemsInBasket;
         int quantityOfDeal;
         int specialPrice;
@@ -96,8 +92,10 @@ public class SupermarketCheckout {
         numberOfSpecialPrices = numberOfItemsInBasket/quantityOfDeal;
         numberOfNonSpecialPrices = numberOfNonSpecialPrices - numberOfSpecialPrices * quantityOfDeal;
 
-        totalCost += numberOfSpecialPrices * specialPrice;
-        totalCost += numberOfNonSpecialPrices * item.getItemPrice();
-        return totalCost;
+        return (numberOfSpecialPrices * specialPrice) + (numberOfNonSpecialPrices * item.getItemPrice());
+    }
+
+    private int calculateRegularItems(int numberOfItemsInBasket, Item item) {
+        return item.getItemPrice() * numberOfItemsInBasket;
     }
 }

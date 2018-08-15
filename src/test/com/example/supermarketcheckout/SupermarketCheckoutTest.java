@@ -16,10 +16,10 @@ public class SupermarketCheckoutTest {
         Item productC = new Item.Builder("C").itemPrice(20).build();
         Item productD = new Item.Builder("D").itemPrice(10).build();
 
-        supermarketCheckout.addItemStockList(productA);
-        supermarketCheckout.addItemStockList(productB);
-        supermarketCheckout.addItemStockList(productC);
-        supermarketCheckout.addItemStockList(productD);
+        supermarketCheckout.addItemToStockList(productA);
+        supermarketCheckout.addItemToStockList(productB);
+        supermarketCheckout.addItemToStockList(productC);
+        supermarketCheckout.addItemToStockList(productD);
     }
 
     @Test
@@ -36,13 +36,13 @@ public class SupermarketCheckoutTest {
 
     @Test
     public void shouldBeAbleToModifyThePriceOfAnItem () {
-        supermarketCheckout.modiftyItemPrice("A", 10);
+        supermarketCheckout.modifyItemPrice("A", 10);
         assertEquals(10, supermarketCheckout.getStockList().get(0).getItemPrice());
     }
 
     @Test
     public void shouldBeAbleToModifySpecialPriceOfAnItem () {
-        supermarketCheckout.modiftyItemSpecialPrice("A", 3, 100);
+        supermarketCheckout.modifyItemSpecialPrice("A", 3, 100);
         assertEquals("3 for 100", supermarketCheckout.getStockList().get(0).getSpecialPrice());
     }
 
