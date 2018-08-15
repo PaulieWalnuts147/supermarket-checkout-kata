@@ -64,27 +64,40 @@ public class SupermarketCheckout {
     }
 
     private int calculateTotalValueOfBasket(int totalCost, String key) {
-        int quantityOfDeal;
-        int specialPrice;
         int numberOfItemsInBasket = Collections.frequency(basketList, key);
-        int numberOfSpecialPrices = 0;
-        int numberOfNonSpecialPrices = numberOfItemsInBasket;
         Item item = returnItemByIdentifier(key);
 
-        if (item.getSpecialPrice() != null) {
-            String[] specialDealParts = item.getSpecialPrice().split(" for ");
-            quantityOfDeal = Integer.parseInt(specialDealParts[0]);
-            specialPrice = Integer.parseInt(specialDealParts[1]);
-            numberOfSpecialPrices = numberOfItemsInBasket/quantityOfDeal;
-            numberOfNonSpecialPrices = numberOfNonSpecialPrices - numberOfSpecialPrices * quantityOfDeal;
-
-            totalCost += numberOfSpecialPrices * specialPrice;
-            totalCost += numberOfNonSpecialPrices * item.getItemPrice();
-
+        if (itemHasASpecialPrice(item)) {
+            totalCost = calculateCostOfItemsEligibleForSpecialPrice(totalCost, numberOfItemsInBasket, item);
         } else {
-            totalCost += item.getItemPrice() * numberOfItemsInBasket;
+            totalCost = calculateRegularItems(totalCost, numberOfItemsInBasket, item);
         }
 
+        return totalCost;
+    }
+
+    private int calculateRegularItems(int totalCost, int numberOfItemsInBasket, Item item) {
+        totalCost += item.getItemPrice() * numberOfItemsInBasket;
+        return totalCost;
+    }
+
+    private boolean itemHasASpecialPrice(Item item) {
+        return item.getSpecialPrice() != null;
+    }
+
+    private int calculateCostOfItemsEligibleForSpecialPrice(int totalCost, int numberOfItemsInBasket, Item item) {
+        int numberOfNonSpecialPrices = numberOfItemsInBasket;
+        int quantityOfDeal;
+        int specialPrice;
+        int numberOfSpecialPrices;
+        String[] specialDealParts = item.getSpecialPrice().split(" for ");
+        quantityOfDeal = Integer.parseInt(specialDealParts[0]);
+        specialPrice = Integer.parseInt(specialDealParts[1]);
+        numberOfSpecialPrices = numberOfItemsInBasket/quantityOfDeal;
+        numberOfNonSpecialPrices = numberOfNonSpecialPrices - numberOfSpecialPrices * quantityOfDeal;
+
+        totalCost += numberOfSpecialPrices * specialPrice;
+        totalCost += numberOfNonSpecialPrices * item.getItemPrice();
         return totalCost;
     }
 }

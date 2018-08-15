@@ -1,5 +1,4 @@
 package com.example.supermarketcheckout;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -138,4 +137,24 @@ public class SupermarketCheckoutTest {
 
         assertEquals(180, totalPrice);
     }
+
+    @Test
+    public void testCalculatingRandomBasket () {
+        supermarketCheckout.scanItem("D");
+        supermarketCheckout.scanItem("B");
+        supermarketCheckout.scanItem("A");
+        supermarketCheckout.scanItem("A");
+        supermarketCheckout.scanItem("B");
+        supermarketCheckout.scanItem("B");
+        supermarketCheckout.scanItem("C");
+        supermarketCheckout.scanItem("D");
+        supermarketCheckout.scanItem("A");
+        supermarketCheckout.scanItem("B");
+        supermarketCheckout.scanItem("A");
+
+        int totalPrice = supermarketCheckout.getTotal();
+
+        assertEquals(310, totalPrice);
+    }
+
 }
